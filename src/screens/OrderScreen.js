@@ -11,7 +11,7 @@ import { Card, Image } from "react-native-elements";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-function ProductsScreen({ navigation }) {
+function OrderScreen({ navigation }) {
   const [products, setProducts] = useState([]);
   const [cartCount, setCartCount] = useState(0);
 
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductsScreen;
+export default OrderScreen;
 
 ProductsScreen.navigationOptions = ({ navigation }) => ({
   headerRight: () => (

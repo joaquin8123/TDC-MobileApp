@@ -15,8 +15,8 @@ function LoginScreen({ navigation }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: username,
-          password: password,
+          username: username || "test",
+          password: password || "test",
           type: "client",
         }),
       });

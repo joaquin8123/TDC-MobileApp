@@ -100,6 +100,9 @@ function CartScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <Text style={styles.heading}>Resumen del Pedido</Text>
         {cartItems.length > 0 && (
           <TouchableOpacity onPress={handleEmptyCart}>
@@ -109,7 +112,7 @@ function CartScreen({ navigation, route }) {
       </View>
       <FlatList
         data={cartItems}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.productId}
         renderItem={({ item }) => (
           <View style={styles.cartItem}>
             <Text style={styles.itemName}>{item.name}</Text>
@@ -145,6 +148,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center",
+    flex: 1,
   },
   cartItem: {
     flexDirection: "row",
