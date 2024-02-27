@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import io from "socket.io-client";
 
 function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -41,6 +42,20 @@ function MyOrders() {
       }
     };
     fetchData();
+  }, [orders]);
+
+  useEffect(() => {
+    const socket = io("http://localhost:3002");
+    socket.on("order-updated", (updatedOrder) => {
+      setOrders((prevOrders) => {
+        const updatedOrders = prevOrders.map((order) =>
+          order.orderId === updatedOrder.orderId
+            ? { ...order, status: updatedOrder.status }
+            : order
+        );
+        return updatedOrders;
+      });
+    });
   }, []);
 
   const handleFilter = (status) => {
@@ -97,7 +112,7 @@ function MyOrders() {
       </View>
       <FlatList
         data={filteredOrders}
-        keyExtractor={(item) => item.id}
+        // keyExtractor={(item) => item.orderId}
         renderItem={({ item }) => <OrderCard order={item} />}
       />
     </ScrollView>
@@ -105,35 +120,43 @@ function MyOrders() {
 }
 
 const OrderCard = ({ order }) => {
-  let statusColor = "black";
+  const [statusColor, setStatusColor] = useState("black");
 
-  switch (order.status) {
-    case "CANCELLED":
-      statusColor = "red";
-      break;
-    case "PENDING":
-      statusColor = "yellow";
-      break;
-    case "CONFIRMED":
-      statusColor = "green";
-      break;
-    case "PROCESSING":
-      statusColor = "blue";
-      break;
-    default:
-      break;
-  }
+  useEffect(() => {
+    switch (order.status) {
+      case "CANCELLED":
+        setStatusColor("red");
+        break;
+      case "PENDING":
+        setStatusColor("yellow");
+        break;
+      case "CONFIRMED":
+        setStatusColor("green");
+        break;
+      case "PROCESSING":
+        setStatusColor("blue");
+        break;
+      default:
+        setStatusColor("black");
+        break;
+    }
+  }, [order.status]);
 
   return (
     <View style={styles.card}>
       <View>
-        <Text style={[styles.statusText, { color: statusColor }]}>
-          Status: {order.status}
+        <Text style={styles.statusText}>
+          Status:
+          <Text style={{ color: statusColor, fontWeight: "bold" }}>
+            {" "}
+            {order.status}
+          </Text>
         </Text>
       </View>
       <Text style={styles.date}>
         Fecha: {order.date}
-        {order.status === "PROCESSING" && ` - Tiempo Estimado de Entrega: ${order.deliveryTime} min`}
+        {order.status === "PROCESSING" &&
+          ` - Tiempo Estimado de Entrega: ${order.deliveryTime} min`}
       </Text>
       <Text>Total: ${order.amount}</Text>
     </View>
