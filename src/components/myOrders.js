@@ -15,6 +15,7 @@ function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState(null);
 
+  console.log("MyOrders", orders);
   useEffect(() => {
     const fetchData = async () => {
       const authenticated =
@@ -42,19 +43,22 @@ function MyOrders() {
       }
     };
     fetchData();
-  }, [orders]);
+  }, []);
 
   useEffect(() => {
     const socket = io("http://localhost:3002");
     socket.on("order-updated", (updatedOrder) => {
-      setOrders((prevOrders) => {
-        const updatedOrders = prevOrders.map((order) =>
-          order.orderId === updatedOrder.orderId
-            ? { ...order, status: updatedOrder.status }
-            : order
-        );
-        return updatedOrders;
-      });
+      if (updatedOrder.source === "app") {
+        setOrders((prevOrders) => {
+          const updatedOrders = prevOrders.map((order) =>
+            order.orderId === updatedOrder.orderId
+              ? { ...order, status: updatedOrder.status }
+              : order
+          );
+          return updatedOrders;
+        });
+      }
+      return;
     });
   }, []);
 
@@ -70,6 +74,7 @@ function MyOrders() {
     ? orders.filter((order) => order.status === filter)
     : orders;
 
+  console.log("filteredOrders", filteredOrders);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.filterSection}>

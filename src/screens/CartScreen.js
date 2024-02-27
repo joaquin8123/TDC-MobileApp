@@ -62,7 +62,7 @@ function CartScreen({ navigation, route }) {
       setTimeout(async () => {
         await handleEmptyCart();
         navigation.navigate("Products");
-      }, 3000);
+      }, 2000);
     } catch (error) {
       Toast.show({
         type: "error",

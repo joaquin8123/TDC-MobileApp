@@ -17,6 +17,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="shopping-cart" size={size} color={color} />
           ),
+          unmountOnBlur: true,
         }}
       />
       <Tab.Screen
@@ -26,6 +27,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="list" size={size} color={color} />
           ),
+          unmountOnBlur: true,
         }}
       />
     </Tab.Navigator>
